@@ -1,0 +1,31 @@
+# HTTP Server
+[server]
+	Address     = ":8888"
+	ServerRoot  = "public"
+	ServerAgent = "cloudNote"
+	LogPath     = "/tmp/log/cloudNote/server"
+
+# Logger.
+[logger]
+    Path        = "/tmp/log/cloudNote"
+    Level       = "all"
+    Stdout      = true
+
+# Database.
+[database]
+    link  = "pgsql: user=postgres password=studysql host=localhost port=5432 dbname=cloudnote sslmode=disable"
+    debug = true
+    # Database logger.
+    [database.logger]
+        Path   = "/tmp/log/cloudNote/sql"
+        Level  = "all"
+        Stdout = true
+
+[gfcli]
+    [[gfcli.gen.dao]]
+        link   = "pgsql: user=postgres password=studysql host=localhost port=5432 dbname=cloudnote sslmode=disable"
+
+
+[cloudNote]
+    apiVersion = "/api/v1"
+    

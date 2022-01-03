@@ -1,1 +1,3 @@
 # CloudNote
+
+write by golang.
