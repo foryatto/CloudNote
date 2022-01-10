@@ -44,13 +44,13 @@ func Init() {
 		group.DELETE("/noteTrash", api.Undefine) // 从回收站中删除
 		group.PUT("/noteTrash", api.Undefine)    // 从回收站中恢复
 
-		group.GET("/categories", api.Undefine)    // 查询分类列表
-		group.POST("/categories", api.Undefine)   // 新增分类
-		group.DELETE("/categories", api.Undefine) // 删除分类
+		group.GET("/categories", api.Category.QueryList) // 查询分类列表
+		group.POST("/categories", api.Category.Add)      // 新增分类
+		group.DELETE("/categories", api.Category.Delete) // 删除分类
 
 		group.Group("/categories", func(group *ghttp.RouterGroup) {
-			group.PUT("/title", api.Undefine)       // 编辑分类名称
-			group.PUT("/description", api.Undefine) // 编辑分类描述信息
+			group.PUT("/title", api.Category.UpdateTitle)             // 编辑分类名称
+			group.PUT("/description", api.Category.UpdateDescription) // 编辑分类描述信息
 		})
 
 		group.GET("/plans", api.Plan.QueryList) // 查询待办列表
