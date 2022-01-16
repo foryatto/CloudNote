@@ -20,16 +20,16 @@ type Category struct {
 
 // Note is the golang structure for table note.
 type Note struct {
-    NoteId     string      `orm:"note_id"     json:"noteId"`     //   
-    Title      string      `orm:"title"       json:"title"`      //   
-    Content    string      `orm:"content"     json:"content"`    //   
-    CreatedAt  *gtime.Time `orm:"created_at"  json:"createdAt"`  //   
-    UpdatedAt  *gtime.Time `orm:"updated_at"  json:"updatedAt"`  //   
-    OwnerId    string      `orm:"owner_id"    json:"ownerId"`    //   
-    CategoryId string      `orm:"category_id" json:"categoryId"` //   
-    Shared     bool        `orm:"shared"      json:"shared"`     //   
-    Trash      bool        `orm:"trash"       json:"trash"`      //   
-    DeletedAt  *gtime.Time `orm:"deleted_at"  json:"deletedAt"`  //   
+    NoteId      string      `orm:"note_id"      json:"noteId"`      //   
+    Title       string      `orm:"title"        json:"title"`       //   
+    Content     string      `orm:"content"      json:"content"`     //   
+    CreatedAt   *gtime.Time `orm:"created_at"   json:"createdAt"`   //   
+    UpdatedAt   *gtime.Time `orm:"updated_at"   json:"updatedAt"`   //   
+    OwnerId     string      `orm:"owner_id"     json:"ownerId"`     //   
+    CategoryId  string      `orm:"category_id"  json:"categoryId"`  //   
+    Shared      bool        `orm:"shared"       json:"shared"`      //   
+    Trash       bool        `orm:"trash"        json:"trash"`       //   
+    DeletedTime *gtime.Time `orm:"deleted_time" json:"deletedTime"` //   
 }
 
 

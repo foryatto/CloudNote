@@ -27,22 +27,26 @@ func Init() {
 			group.GET("/profile", api.User.GetProfile)      // 查询用户资料
 		})
 
-		group.GET("/notes", api.Undefine)    // 查询笔记列表 (不包含笔记内容)
-		group.POST("/notes", api.Undefine)   // 新增笔记
-		group.DELETE("/notes", api.Undefine) // 新增笔记
+		group.GET("/notes", api.Note.BaseQuery)                 // 查询笔记列表 (不包含笔记内容)
+		group.POST("/notes/public", api.Note.BaseQueryByUserId) // 查询指定用户的公开笔记列表 (不包含笔记内容)
 
-		group.GET("/note", api.Undefine) // 查询笔记详情
+		group.POST("/notes", api.Note.Add)      // 新增笔记
+		group.DELETE("/notes", api.Note.Delete) // 移动笔记至回收站
+
+		group.GET("/note", api.Note.DetailQuery) // 查询笔记详情
+
+		group.POST("/note/public", api.Note.DetailQueryByUserId) // 查询指定用户的公开笔记详情
 
 		group.Group("/note", func(group *ghttp.RouterGroup) {
-			group.PUT("/limit", api.Undefine)    // 设置笔记权限
-			group.PUT("/title", api.Undefine)    // 更改笔记标题
-			group.PUT("/content", api.Undefine)  // 更改笔记内容
-			group.PUT("/category", api.Undefine) // 更改笔记内容
+			group.PUT("/limit", api.Note.UpdateLimit)       // 设置笔记权限
+			group.PUT("/title", api.Note.UpdateTitle)       // 更改笔记标题
+			group.PUT("/content", api.Note.UpdateContent)   // 更改笔记内容
+			group.PUT("/category", api.Note.UpdateCategory) // 更改笔记内容
 		})
 
-		group.GET("/noteTrash", api.Undefine)    // 查询回收站中的笔记
-		group.DELETE("/noteTrash", api.Undefine) // 从回收站中删除
-		group.PUT("/noteTrash", api.Undefine)    // 从回收站中恢复
+		group.GET("/noteTrash", api.Undefine)                // 查询回收站中的笔记
+		group.DELETE("/noteTrash", api.Note.DeleteFromTrash) // 从回收站中删除
+		group.PUT("/noteTrash", api.Note.RecoverFromTrash)   // 从回收站中恢复
 
 		group.GET("/categories", api.Category.QueryList) // 查询分类列表
 		group.POST("/categories", api.Category.Add)      // 新增分类

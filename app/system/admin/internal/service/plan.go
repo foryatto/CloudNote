@@ -20,8 +20,10 @@ func (p *planService) Add(ownerId string, param *define.PlanAddReq) error {
 		return shared.NewError(model.ERR_INVALID_PARAM)
 	}
 	if param.Title == "" {
-		endIndex := len(param.Content) % 10
-		if endIndex == 0 {
+		var endIndex int
+		if len(param.Content) < 10 {
+			endIndex = len(param.Content)
+		} else {
 			endIndex = 10
 		}
 		param.Title = param.Content[:endIndex] + "..."

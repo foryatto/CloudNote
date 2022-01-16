@@ -19,30 +19,30 @@ type NoteDao struct {
 
 // NoteColumns defines and stores column names for table note.
 type NoteColumns struct {
-	NoteId      string //   
-    Title       string //   
-    Content     string //   
-    CreatedAt   string //   
-    UpdatedAt   string //   
-    OwnerId     string //   
-    CategoryId  string //   
-    Shared      string //   
-    Trash       string //   
-    DeletedAt   string //
+	NoteId       string //   
+    Title        string //   
+    Content      string //   
+    CreatedAt    string //   
+    UpdatedAt    string //   
+    OwnerId      string //   
+    CategoryId   string //   
+    Shared       string //   
+    Trash        string //   
+    DeletedTime  string //
 }
 
 //  noteColumns holds the columns for table note.
 var noteColumns = NoteColumns{
-	NoteId:     "note_id",      
-            Title:      "title",        
-            Content:    "content",      
-            CreatedAt:  "created_at",   
-            UpdatedAt:  "updated_at",   
-            OwnerId:    "owner_id",     
-            CategoryId: "category_id",  
-            Shared:     "shared",       
-            Trash:      "trash",        
-            DeletedAt:  "deleted_at",
+	NoteId:      "note_id",       
+            Title:       "title",         
+            Content:     "content",       
+            CreatedAt:   "created_at",    
+            UpdatedAt:   "updated_at",    
+            OwnerId:     "owner_id",      
+            CategoryId:  "category_id",   
+            Shared:      "shared",        
+            Trash:       "trash",         
+            DeletedTime: "deleted_time",
 }
 
 // NewNoteDao creates and returns a new DAO object for table data access.
