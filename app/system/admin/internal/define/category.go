@@ -4,6 +4,12 @@ import (
 	"CloudNote/app/shared"
 )
 
+type Category struct {
+	CategoryId  string `json:"categoryId"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
 type CategoryAddReq struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -31,7 +37,5 @@ type CategoryQueryReq struct {
 }
 
 type CategoryQueryResp struct {
-	CategoryId  string `json:"categoryId"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Category
 }

@@ -1,6 +1,23 @@
 package define
 
-import "CloudNote/app/shared"
+import (
+	"CloudNote/app/shared"
+	"github.com/gogf/gf/os/gtime"
+)
+
+type Note struct {
+	NoteId      string      `orm:"note_id"      json:"noteId"`
+	Title       string      `orm:"title"        json:"title"`
+	Content     string      `orm:"content"      json:"content"`
+	CreatedAt   *gtime.Time `orm:"created_at"   json:"createdAt"`
+	UpdatedAt   *gtime.Time `orm:"updated_at"   json:"updatedAt"`
+	OwnerId     string      `orm:"owner_id"     json:"ownerId"`
+	Shared      bool        `orm:"shared"       json:"shared"`
+	Trash       bool        `orm:"trash"        json:"trash"`
+	DeletedTime *gtime.Time `orm:"deleted_time" json:"deletedTime"`
+
+	Category Category `json:"category"`
+}
 
 type NoteAddReq struct {
 	Title      string `json:"title"`
@@ -51,8 +68,10 @@ type NoteBaseQueryReq struct {
 }
 
 type NoteBaseQueryResp struct {
-	Title  string `json:"title"`
-	NoteId string `json:"noteId"`
+	Title     string      `json:"title"`
+	NoteId    string      `json:"noteId"`
+	UpdatedAt *gtime.Time `json:"updatedAt" orm:"updated_at"`
+	Category  Category    `json:"category"`
 }
 
 type NoteDetailQueryReq struct {

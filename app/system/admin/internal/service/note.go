@@ -8,6 +8,7 @@ import (
 	"context"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/os/gtime"
+	"github.com/gogf/gf/util/gconv"
 	"github.com/gogf/guuid"
 	"time"
 )
@@ -16,6 +17,7 @@ var Note = noteService{}
 
 type noteService struct{}
 
+// Add 新增笔记
 func (n *noteService) Add(ownerId string, param *define.NoteAddReq) error {
 	if param.Content == "" {
 		return shared.NewError(model.ERR_INVALID_PARAM)
@@ -44,6 +46,7 @@ func (n *noteService) Add(ownerId string, param *define.NoteAddReq) error {
 	return nil
 }
 
+// UpdateLimit 更新笔记权限(是否公开)
 func (n *noteService) UpdateLimit(ownerId string, param *define.NoteUpdateLimitReq) error {
 	if param.NoteId == "" {
 		return shared.NewError(model.ERR_INVALID_PARAM)
@@ -69,6 +72,7 @@ func (n *noteService) UpdateLimit(ownerId string, param *define.NoteUpdateLimitR
 	return nil
 }
 
+// UpdateTitle 更新笔记标题
 func (n *noteService) UpdateTitle(ownerId string, param *define.NoteUpdateTitleReq) error {
 	if param.NoteId == "" || param.Title == "" {
 		return shared.NewError(model.ERR_INVALID_PARAM)
@@ -94,6 +98,7 @@ func (n *noteService) UpdateTitle(ownerId string, param *define.NoteUpdateTitleR
 	return nil
 }
 
+// UpdateContent 更新笔记内容
 func (n *noteService) UpdateContent(ownerId string, param *define.NoteUpdateContentReq) error {
 	if param.NoteId == "" {
 		return shared.NewError(model.ERR_INVALID_PARAM)
@@ -119,6 +124,7 @@ func (n *noteService) UpdateContent(ownerId string, param *define.NoteUpdateCont
 	return nil
 }
 
+// UpdateCategory 更新笔记的分类
 func (n *noteService) UpdateCategory(ownerId string, param *define.NoteUpdateCategoryReq) error {
 	if param.NoteId == "" || param.CategoryId == "" {
 		return shared.NewError(model.ERR_INVALID_PARAM)
@@ -144,6 +150,7 @@ func (n *noteService) UpdateCategory(ownerId string, param *define.NoteUpdateCat
 	return nil
 }
 
+// Delete 删除笔记(移至回收站)
 func (n *noteService) Delete(ownerId string, param *define.NoteDeleteReq) error {
 	if len(param.NoteIds) == 0 {
 		return shared.NewError(model.ERR_INVALID_PARAM)
@@ -172,6 +179,7 @@ func (n *noteService) Delete(ownerId string, param *define.NoteDeleteReq) error 
 	return nil
 }
 
+// RecoverFromTrash 从回收站中恢复
 func (n *noteService) RecoverFromTrash(ownerId string, param *define.NoteRecoverReq) error {
 	if len(param.NoteIds) == 0 {
 		return shared.NewError(model.ERR_INVALID_PARAM)
@@ -199,6 +207,7 @@ func (n *noteService) RecoverFromTrash(ownerId string, param *define.NoteRecover
 	return nil
 }
 
+// DeleteFromTrash 从回收站中移除
 func (n *noteService) DeleteFromTrash(ownerId string, param *define.NoteDeleteFromTrashReq) error {
 	if len(param.NoteIds) == 0 {
 		return shared.NewError(model.ERR_INVALID_PARAM)
@@ -217,6 +226,7 @@ func (n *noteService) DeleteFromTrash(ownerId string, param *define.NoteDeleteFr
 	return nil
 }
 
+// BaseQuery 查询笔记列表
 func (n *noteService) BaseQuery(ownerId string, param *define.NoteBaseQueryReq) (interface{}, error) {
 	if len(ownerId) == 0 {
 		return nil, shared.NewError(model.ERR_INVALID_PARAM)
@@ -227,8 +237,11 @@ func (n *noteService) BaseQuery(ownerId string, param *define.NoteBaseQueryReq) 
 	if param.Trash == true {
 		sql = sql.Where(dao.Note.Columns.Trash, param.Trash)
 	} else {
-		sql = sql.Where(dao.Note.Columns.Shared, param.Shared)
+		sql = sql.Where(dao.Note.Columns.Trash, false)
 	}
+
+	//sql = sql.Where(dao.Note.Columns.Shared, param.Shared)
+
 	if param.Page >= 1 && param.PageSize >= 1 {
 		sql = sql.Page(param.Page, param.PageSize)
 	}
@@ -250,21 +263,43 @@ func (n *noteService) BaseQuery(ownerId string, param *define.NoteBaseQueryReq) 
 		g.Log().Line().Warning(err)
 		return nil, err
 	}
-
+	// todo 新增功能：返回分类
 	var result []*define.NoteBaseQueryResp
+	var noteData []*model.Note
 	err = sql.Fields(dao.Note.Columns.Title,
 		dao.Note.Columns.NoteId,
-	).Scan(&result)
+		dao.Note.Columns.UpdatedAt,
+		dao.Note.Columns.CategoryId,
+	).Scan(&noteData)
 	if err != nil {
 		g.Log().Line().Warning(err)
 		return nil, err
 	}
+
+	err = gconv.Scan(noteData, &result)
+	if err != nil {
+		g.Log().Line().Warning(err)
+		return nil, err
+	}
+	for i := 0; i < len(noteData); i++ {
+		if len(noteData[i].CategoryId) == 0 {
+			continue
+		}
+		categoryTemp, err := Category.QueryById(noteData[i].CategoryId)
+		if err != nil {
+			g.Log().Line().Warning(err)
+			return nil, err
+		}
+		result[i].Category = *categoryTemp
+	}
+
 	return g.Map{
 		"total": count,
 		"items": result,
 	}, nil
 }
 
+// DetailQuery 查询笔记详细内容
 func (n *noteService) DetailQuery(ownerId string, param *define.NoteDetailQueryReq) (interface{}, error) {
 	if param.NoteId == "" || len(ownerId) == 0 {
 		return nil, shared.NewError(model.ERR_INVALID_PARAM)
@@ -275,14 +310,29 @@ func (n *noteService) DetailQuery(ownerId string, param *define.NoteDetailQueryR
 	})
 
 	var result *model.Note
+	var noteDetail *define.Note
 	err := sql.Scan(&result)
 	if err != nil {
 		g.Log().Line().Warning(err)
 		return nil, err
 	}
-	return result, nil
+	gconv.Scan(result, &noteDetail)
+	if err != nil {
+		g.Log().Line().Warning(err)
+		return nil, err
+	}
+	if result.CategoryId != "" {
+		categoryTemp, err := Category.QueryById(result.CategoryId)
+		if err != nil {
+			g.Log().Line().Warning(err)
+			return nil, err
+		}
+		noteDetail.Category = *categoryTemp
+	}
+	return noteDetail, nil
 }
 
+// BaseQueryByUserId 查询用户公开的笔记
 func (n *noteService) BaseQueryByUserId(param *define.NotePublicBaseQueryReq) (interface{}, error) {
 	if len(param.UserId) == 0 {
 		return nil, shared.NewError(model.ERR_INVALID_PARAM)
@@ -313,6 +363,7 @@ func (n *noteService) BaseQueryByUserId(param *define.NotePublicBaseQueryReq) (i
 	}, nil
 }
 
+// DetailQueryByUserId 查询用户公开笔记的详细内容
 func (n *noteService) DetailQueryByUserId(param *define.NotePublicDetailQueryReq) (interface{}, error) {
 	if param.UserId == "" || len(param.NoteId) == 0 {
 		return nil, shared.NewError(model.ERR_INVALID_PARAM)

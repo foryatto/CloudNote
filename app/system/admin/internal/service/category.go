@@ -86,6 +86,20 @@ func (c *categoryService) QueryList(ownerId string, param *define.CategoryQueryR
 	}, nil
 }
 
+func (c *categoryService) QueryById(id string) (*define.Category, error) {
+	sql := dao.Category.Ctx(context.TODO()).Where(g.Map{
+		dao.Category.Columns.CategoryId: id,
+	})
+
+	var result *define.Category
+	err := sql.Scan(&result)
+	if err != nil {
+		g.Log().Line().Warning(err)
+		return nil, err
+	}
+	return result, nil
+}
+
 func (c *categoryService) UpdateTitle(ownerId string, param *define.CategoryUpdateTitleReq) error {
 	if len(param.Title) == 0 || len(param.CategoryId) == 0 {
 		return shared.NewError(model.ERR_INVALID_PARAM)
