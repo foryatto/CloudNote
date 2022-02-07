@@ -290,7 +290,9 @@ func (n *noteService) BaseQuery(ownerId string, param *define.NoteBaseQueryReq) 
 			g.Log().Line().Warning(err)
 			return nil, err
 		}
-		result[i].Category = *categoryTemp
+		if categoryTemp != nil {
+			result[i].Category = *categoryTemp
+		}
 	}
 
 	return g.Map{

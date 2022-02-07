@@ -16,7 +16,7 @@ type CategoryAddReq struct {
 }
 
 type CategoryDeleteReq struct {
-	CategoryIds []string `json:"categoryIds"`
+	CategoryIds []string `json:"ids"`
 }
 
 type CategoryUpdateTitleReq struct {
