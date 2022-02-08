@@ -43,5 +43,5 @@ type PlanUpdateStatusReq struct {
 }
 
 type PlanDeleteReq struct {
-	PlanIds []string `json:"planIds"`
+	PlanIds []string `json:"ids"`
 }

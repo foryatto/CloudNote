@@ -46,8 +46,7 @@ func (p *planService) Add(ownerId string, param *define.PlanAddReq) error {
 
 func (p *planService) QueryList(ownerId string, param *define.PlanQueryReq) (interface{}, error) {
 	sql := dao.Plan.Ctx(context.TODO()).Where(g.Map{
-		dao.Plan.Columns.OwnerId:   ownerId,
-		dao.Plan.Columns.Completed: param.Completed,
+		dao.Plan.Columns.OwnerId: ownerId,
 	})
 	if param.Page >= 1 && param.PageSize >= 1 {
 		sql = sql.Page(param.Page, param.PageSize)
@@ -64,7 +63,9 @@ func (p *planService) QueryList(ownerId string, param *define.PlanQueryReq) (int
 	if param.Content != "" {
 		sql = sql.WhereLike(dao.Plan.Columns.Content, "%"+param.Content+"%")
 	}
-
+	if param.Completed == true {
+		sql = sql.WhereLike(dao.Plan.Columns.Completed, param.Completed)
+	}
 	count, err := sql.Count()
 	if err != nil {
 		g.Log().Line().Warning(err)
