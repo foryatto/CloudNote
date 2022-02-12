@@ -240,6 +240,10 @@ func (n *noteService) BaseQuery(ownerId string, param *define.NoteBaseQueryReq) 
 		sql = sql.Where(dao.Note.Columns.Trash, false)
 	}
 
+	if len(param.CategoryId) > 0 {
+		sql = sql.Where(dao.Note.Columns.CategoryId, param.CategoryId)
+	}
+
 	//sql = sql.Where(dao.Note.Columns.Shared, param.Shared)
 
 	if param.Page >= 1 && param.PageSize >= 1 {

@@ -60,11 +60,12 @@ type NoteDeleteFromTrashReq struct {
 
 type NoteBaseQueryReq struct {
 	shared.StandReqParam
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Shared  bool   `json:"shared"`
-	NoteId  string `json:"noteId"`
-	Trash   bool   `json:"trash"`
+	Title      string `json:"title"`
+	Content    string `json:"content"`
+	Shared     bool   `json:"shared"`
+	NoteId     string `json:"noteId"`
+	Trash      bool   `json:"trash"`
+	CategoryId string `json:"categoryId"`
 }
 
 type NoteBaseQueryResp struct {
