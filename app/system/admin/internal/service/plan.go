@@ -63,9 +63,9 @@ func (p *planService) QueryList(ownerId string, param *define.PlanQueryReq) (int
 	if param.Content != "" {
 		sql = sql.WhereLike(dao.Plan.Columns.Content, "%"+param.Content+"%")
 	}
-	if param.Completed == true {
-		sql = sql.WhereLike(dao.Plan.Columns.Completed, param.Completed)
-	}
+
+	sql = sql.Where(dao.Plan.Columns.Completed, param.Completed)
+
 	count, err := sql.Count()
 	if err != nil {
 		g.Log().Line().Warning(err)
