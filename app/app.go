@@ -17,5 +17,9 @@ func init() {
 }
 
 func Run() {
-	g.Server().Run()
+	s := g.Server()
+	s.SetServerRoot("public")
+	s.AddStaticPath("/m", "public/client/")
+	s.AddStaticPath("/admin", "public/admin/")
+	s.Run()
 }
