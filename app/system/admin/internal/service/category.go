@@ -52,6 +52,7 @@ func (c *categoryService) QueryList(ownerId string, param *define.CategoryQueryR
 	sql := dao.Category.Ctx(context.TODO()).Where(g.Map{
 		dao.Category.Columns.OwnerId: ownerId,
 	})
+
 	if param.Page >= 1 && param.PageSize >= 1 {
 		sql = sql.Page(param.Page, param.PageSize)
 	}

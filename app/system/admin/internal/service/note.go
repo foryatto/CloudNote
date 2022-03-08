@@ -234,6 +234,7 @@ func (n *noteService) BaseQuery(ownerId string, param *define.NoteBaseQueryReq) 
 	sql := dao.Note.Ctx(context.TODO()).Where(g.Map{
 		dao.Note.Columns.OwnerId: ownerId,
 	})
+
 	if param.Trash == true {
 		sql = sql.Where(dao.Note.Columns.Trash, param.Trash)
 	} else {
@@ -249,6 +250,7 @@ func (n *noteService) BaseQuery(ownerId string, param *define.NoteBaseQueryReq) 
 	if param.Page >= 1 && param.PageSize >= 1 {
 		sql = sql.Page(param.Page, param.PageSize)
 	}
+
 	if param.OrderBy != "" {
 		sql = sql.Order(param.OrderBy)
 	}
@@ -267,6 +269,9 @@ func (n *noteService) BaseQuery(ownerId string, param *define.NoteBaseQueryReq) 
 		g.Log().Line().Warning(err)
 		return nil, err
 	}
+
+	sql = sql.OrderDesc(dao.Note.Columns.CreatedAt)
+
 	// todo 新增功能：返回分类
 	var result []*define.NoteBaseQueryResp
 	var noteData []*model.Note

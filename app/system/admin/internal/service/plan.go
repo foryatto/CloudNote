@@ -48,6 +48,7 @@ func (p *planService) QueryList(ownerId string, param *define.PlanQueryReq) (int
 	sql := dao.Plan.Ctx(context.TODO()).Where(g.Map{
 		dao.Plan.Columns.OwnerId: ownerId,
 	})
+
 	if param.Page >= 1 && param.PageSize >= 1 {
 		sql = sql.Page(param.Page, param.PageSize)
 	}
@@ -64,13 +65,19 @@ func (p *planService) QueryList(ownerId string, param *define.PlanQueryReq) (int
 		sql = sql.WhereLike(dao.Plan.Columns.Content, "%"+param.Content+"%")
 	}
 
-	sql = sql.Where(dao.Plan.Columns.Completed, param.Completed)
+	if param.Completed == 1 {
+		sql = sql.Where(dao.Plan.Columns.Completed, true)
+	} else if param.Completed == 2 {
+		sql = sql.Where(dao.Plan.Columns.Completed, false)
+	}
 
 	count, err := sql.Count()
 	if err != nil {
 		g.Log().Line().Warning(err)
 		return nil, err
 	}
+
+	sql = sql.OrderDesc(dao.Plan.Columns.CreatedAt)
 
 	var result []*define.PlanQueryResp
 	err = sql.Scan(&result)

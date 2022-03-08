@@ -14,7 +14,7 @@ type PlanQueryReq struct {
 	shared.StandReqParam
 	Title     string `json:"title"`
 	Content   string `json:"content"`
-	Completed bool   `json:"completed"`
+	Completed int   `json:"completed"`  // 0表示查询所有, 1表示完成, 2表示未完成
 	PlanId    string `json:"planId"`
 }
 
