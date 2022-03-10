@@ -36,6 +36,10 @@ func (c *categoryService) Delete(ownerId string, param *define.CategoryDeleteReq
 		return shared.NewError(model.ERR_INVALID_PARAM)
 	}
 	for _, id := range param.CategoryIds {
+
+		// 先删除笔记的分类ID
+		Note.clearCategoryOfNote(ownerId, id)
+
 		_, err := dao.Category.Ctx(context.TODO()).Where(g.Map{
 			dao.Category.Columns.OwnerId:    ownerId,
 			dao.Category.Columns.CategoryId: id,

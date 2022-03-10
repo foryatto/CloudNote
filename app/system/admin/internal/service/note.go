@@ -394,3 +394,21 @@ func (n *noteService) DetailQueryByUserId(param *define.NotePublicDetailQueryReq
 	}
 	return result, nil
 }
+
+func (n *noteService) clearCategoryOfNote(ownerId, categoryId string) error {
+	if len(categoryId) == 0 {
+		g.Log().Line().Warning("参数ID不能为空")
+		return shared.NewError(model.ERR_INVALID_PARAM)
+	}
+	_, err := dao.Note.Ctx(context.TODO()).Where(g.Map{
+		dao.Note.Columns.OwnerId : ownerId,
+		dao.Note.Columns.CategoryId: categoryId,
+	}).Update(g.Map{
+		dao.Note.Columns.CategoryId: nil,
+	})
+	if err != nil {
+		g.Log().Line().Warning(err)
+		return err
+	}
+	return nil
+}
