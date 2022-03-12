@@ -20,6 +20,6 @@ func Run() {
 	s := g.Server()
 	s.SetServerRoot("public")
 	s.AddStaticPath("/m", "public/client/")
-	s.AddStaticPath("/admin", "public/admin/")
+	s.AddStaticPath("/pc", "public/admin/")
 	s.Run()
 }
